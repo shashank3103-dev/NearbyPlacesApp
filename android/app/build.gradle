@@ -1,12 +1,26 @@
 apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
 react {
-    autolinkLibrariesWithApp()
-}
+    /* Folders */
+    //   The root of your project, i.e. where "package.json" lives. Default is '..'
+    // root = file("../")
+    //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
+    // reactNativeDir = file("../node_modules/react-native")
+    //   The folder where the react-native Codegen package is. Default is ../node_modules/@react-native/codegen
+    // codegenDir = file("../node_modules/@react-native/codegen")
 
-def enableProguardInReleaseBuilds = false
-def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+    /* Variants */
+    //   The list of variants to that are debuggable. For those we're going to
+    //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
+    //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
+    // debuggableVariants = ["liteDebug", "prodDebug"]
+
+    /* Bundling */
+    //   A list containing the node command and its flags. Default is just 'node'.
+    // nodeExecutableAndArgs = ["node"]
+}
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -14,7 +28,6 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.nearbyplacesapp"
-    
     defaultConfig {
         applicationId "com.nearbyplacesapp"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -22,7 +35,6 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -31,39 +43,22 @@ android {
             keyPassword 'android'
         }
     }
-    
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
             signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
+            minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
-
-    // Java 8 features
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
-project.ext.react = [
-        enableHermes: true
-]
 
 dependencies {
     implementation("com.facebook.react:react-android")
-    
-    // Google Play Services - Location
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-    
-    // AndroidX Lifecycle (MVVM)
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.6.1'
-    
+    implementation("com.facebook.react:flipper-integration")
+
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
